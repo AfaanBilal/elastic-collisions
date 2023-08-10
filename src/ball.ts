@@ -5,7 +5,7 @@
  * @link   https://afaan.dev
  */
 
-interface Vec2 {
+export interface Vec2 {
     x: number;
     y: number;
 }

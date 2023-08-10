@@ -6,48 +6,22 @@
  */
 
 import { Ball } from "./ball";
+import { randomPositionComponent, randomColor, randomVelocityComponent, areColliding, R, D } from "./helpers";
 
 const canvas = document.getElementById('c') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
-const D = 800;
-const R = 10;
-const randomGen = (from: number, to: number) => () => Math.round(from + Math.random() * to);
-const random = randomGen(R + 1, D - R - 1);
-
-const colors = [
-    'black',
-    'silver',
-    'gray',
-    'white',
-    'maroon',
-    'red',
-    'purple',
-    'fuchsia',
-    'green',
-    'lime',
-    'olive',
-    'yellow',
-    'navy',
-    'blue',
-    'teal',
-    'aqua',
-];
-const randomColor = () => {
-    return colors[randomGen(0, colors.length - 1)()];
-};
-
 const balls: Array<Ball> = [];
 
 function setup() {
-    balls.push(new Ball({ x: random(), y: random() }, R, randomColor(), { x: 100, y: 100 }));
-    balls.push(new Ball({ x: random(), y: random() }, R, randomColor(), { x: 100, y: 100 }));
-    balls.push(new Ball({ x: random(), y: random() }, R, randomColor(), { x: 100, y: 100 }));
-    balls.push(new Ball({ x: random(), y: random() }, R, randomColor(), { x: 100, y: 100 }));
-    balls.push(new Ball({ x: random(), y: random() }, R, randomColor(), { x: 100, y: 100 }));
-    balls.push(new Ball({ x: random(), y: random() }, R, randomColor(), { x: 100, y: 100 }));
-    balls.push(new Ball({ x: random(), y: random() }, R, randomColor(), { x: 100, y: 100 }));
-    balls.push(new Ball({ x: random(), y: random() }, R, randomColor(), { x: 100, y: 100 }));
+    for (let i = 0; i < 10; ++i) {
+        balls.push(new Ball(
+            { x: randomPositionComponent(), y: randomPositionComponent() },
+            R,
+            randomColor(),
+            { x: randomVelocityComponent(), y: randomVelocityComponent() }
+        ));
+    }
 }
 
 let lastFrameTime = 0;
@@ -57,6 +31,20 @@ function update(ts: number) {
     lastFrameTime = ts;
 
     ctx.clearRect(0, 0, D, D);
+
+    for (let i = 0; i < balls.length; ++i) {
+        for (let j = i + 1; j < balls.length; ++j) {
+            if (areColliding(balls[i], balls[j])) {
+                const b1v = structuredClone(balls[i].velocity);
+
+                balls[i].velocity.x = balls[j].velocity.x;
+                balls[i].velocity.y = balls[j].velocity.y;
+
+                balls[j].velocity.x = b1v.x;
+                balls[j].velocity.y = b1v.y;
+            }
+        }
+    }
 
     for (let i = 0; i < balls.length; ++i) {
         balls[i].update(dt);
