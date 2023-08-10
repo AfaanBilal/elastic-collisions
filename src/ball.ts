@@ -22,7 +22,7 @@ export class Ball {
             this.velocity.y = -this.velocity.y;
         }
 
-        this.color = 'rgba(255, 0, 0, ' + (Math.abs(this.velocity.x) / 150) + ')';
+        this.color = 'rgba(255, 0, 0, ' + ((Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 300) + ')';
 
         this.pos.x += this.velocity.x * dt;
         this.pos.y += this.velocity.y * dt;
