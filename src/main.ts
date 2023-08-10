@@ -6,7 +6,7 @@
  */
 
 import { Ball } from "./ball";
-import { randomPositionComponent, randomColor, randomVelocityComponent, areColliding, R, D, inTheWall } from "./helpers";
+import { randomPositionComponent, randomColor, randomVelocityComponent, areColliding, R, D, inTheWall, areCollidingOptimized } from "./helpers";
 
 const canvas = document.getElementById('c') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -57,7 +57,7 @@ function update(ts: number) {
 
     for (let i = 0; i < balls.length; ++i) {
         for (let j = i + 1; j < balls.length; ++j) {
-            if (areColliding(balls[i], balls[j])) {
+            if (areCollidingOptimized(balls[i], balls[j])) {
                 const b1v = structuredClone(balls[i].velocity);
 
                 balls[i].velocity.x = balls[j].velocity.x;

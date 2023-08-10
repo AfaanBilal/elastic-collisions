@@ -24,6 +24,15 @@ export const distance = (p1: Vec2, p2: Vec2) => {
 
 export const areColliding = (b1: Ball, b2: Ball) => distance(b1.pos, b2.pos) <= (b1.radius + b2.radius);
 
+export const areCollidingOptimized = (b1: Ball, b2: Ball) => {
+    const rSum = b1.radius + b2.radius;
+
+    const dx = b1.pos.x - b2.pos.x;
+    const dy = b1.pos.y - b2.pos.y;
+
+    return (rSum * rSum) >= (dx * dx + dy * dy);
+};
+
 export const inTheWall = (b: Ball) => b.pos.x <= R || b.pos.x >= (D - R) || b.pos.y <= R || b.pos.y >= (D - R);
 
 const colors = [
