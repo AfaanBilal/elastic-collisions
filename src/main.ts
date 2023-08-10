@@ -6,21 +6,44 @@
  */
 
 import { Ball } from "./ball";
-import { randomPositionComponent, randomColor, randomVelocityComponent, areColliding, R, D } from "./helpers";
+import { randomPositionComponent, randomColor, randomVelocityComponent, areColliding, R, D, inTheWall } from "./helpers";
 
 const canvas = document.getElementById('c') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
 const balls: Array<Ball> = [];
 
-function setup() {
-    for (let i = 0; i < 10; ++i) {
-        balls.push(new Ball(
-            { x: randomPositionComponent(), y: randomPositionComponent() },
-            R,
-            randomColor(),
-            { x: randomVelocityComponent(), y: randomVelocityComponent() }
-        ));
+function setup(n = 10) {
+    for (let i = 0; i < n; ++i) {
+        let ball;
+        let isColliding = false;
+        let maxChecks = 10;
+
+        do {
+            isColliding = false;
+
+            ball = new Ball(
+                { x: randomPositionComponent(), y: randomPositionComponent() },
+                R,
+                randomColor(),
+                { x: randomVelocityComponent(), y: randomVelocityComponent() }
+            );
+
+            if (inTheWall(ball)) {
+                isColliding = true;
+            } else {
+                for (let j = 0; j < balls.length; j++) {
+                    if (areColliding(balls[j], ball)) {
+                        isColliding = true;
+                        break;
+                    }
+                }
+            }
+
+            maxChecks--;
+        } while (isColliding && maxChecks);
+
+        balls.push(ball);
     }
 }
 
@@ -58,7 +81,7 @@ function update(ts: number) {
 }
 
 function run() {
-    setup();
+    setup(50);
     requestAnimationFrame(update);
 }
 
